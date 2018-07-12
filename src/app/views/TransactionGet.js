@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { userInfo } from '../actions'
+import { getTransaction } from '../actions'
 
-class Info extends Component {
+class Transaction extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
-      address: '',
-      token: ''
+      hash: '',
+      token: '',
+      address: ''
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -28,22 +27,23 @@ class Info extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.asUserInfo(this.state);
+    this.props.asGetTransaction(this.state);
   }
 
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-      <h1>User Info</h1>
+      <h1>Transaction:</h1>
         <label>
-          Email:
-          <input name="email" type="email" value={this.state.value} onChange={this.handleChange} />
+          Token:
+          <input name="token" type="text" value={this.state.value} onChange={this.handleChange} />
         </label>
         <br />
         <label>
-          Password:
-          <input name="password" type="password" pattern=".{8,}" placeholder="Minimum 8 characters" value={this.state.value} onChange={this.handleChange} />
+          Hash:
+          <input name="hash" type="text" value={this.state.value} placeholder="Optional" onChange={this.handleChange} />
         </label>
+                
         <input type="submit" value="Submit" />
       </form>
     );
@@ -51,14 +51,12 @@ class Info extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  email: state.email,
-  password: state.password,
-  address: state.address,
-  token: state.token
+  token: state.token,
+  address: state.address
 })
 
 const mapDispatchToProps = dispatch => ({
-  asUserInfo: (props) => dispatch(userInfo(props))
+  asGetTransaction: (props) => dispatch(getTransaction(props))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Info);
+export default connect(mapStateToProps, mapDispatchToProps)(Transaction);

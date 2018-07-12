@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux'
 import { newUser } from '../actions';
 
@@ -30,23 +29,7 @@ class User extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    axios.post('https://api.bitsign.io/api/v2/user', {
-      email: this.state.email,
-      password: this.state.password,
-      username: this.state.userName
-    })
-      .then(res => {
-        alert('A user was submitted: ' + this.state.userName + this.state.email +this.state.password);
-        console.log(res);
-        console.log(res.data);
-        this.props.asNewUser(res.data.data);
-        this.setLocal(res);
-    })
-  }
-
-  setLocal(res) {
-    localStorage.setItem('ethereumAddress', JSON.stringify(res.data.data.etherAddress));
-    localStorage.setItem('token', JSON.stringify(res.data.data.token));
+    this.props.asNewUser(this.state);
   }
 
   render() {
@@ -84,6 +67,5 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = dispatch => ({
   asNewUser: (props) => dispatch(newUser(props))
 })
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

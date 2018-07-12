@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux'
+import { notarization } from '../actions'
 
 class Transaction extends Component {
   constructor(props) {
@@ -27,17 +28,7 @@ class Transaction extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    axios.post('https://api.bitsign.io/eth/notarizetx', {
-      token: this.state.token,
-      data: this.state.data,
-      address: this.state.address,
-      password: this.state.password
-     })
-      .then(res => {
-        alert('A user was submitted: ' + this.state.userName + this.state.email +this.state.password);
-        console.log(res);
-        console.log(res.data);
-    })
+    this.props.asNotarization(this.state);
   }
 
   render() {
@@ -70,4 +61,15 @@ class Transaction extends Component {
   }
 }
 
-export default Transaction;
+const mapStateToProps = (state) => ({
+  password: state.password,
+  token: state.token,
+  address: state.address,
+  data: state.data
+})
+
+const mapDispatchToProps = dispatch => ({
+  asNotarization: (props) => dispatch(notarization(props))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transaction);
