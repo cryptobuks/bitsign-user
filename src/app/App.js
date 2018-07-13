@@ -20,13 +20,8 @@ try {
     address: JSON.parse(localStorage.getItem('ethereumAddress')),
     token: JSON.parse(localStorage.getItem('token')),
 
-    /*authenticate(cb){
-      this.address: JSON.parse(localStorage.getItem('ethereumAddress'))
-      this.token: JSON.parse(localStorage.getItem('token'))
-    },*/
-
-    signout(cb) {
-      console.log(fakeAuth.adress + " - " + fakeAuth.token);
+    signout() {
+      console.log(fakeAuth.address + " - " + fakeAuth.token);
       localStorage.clear();
     }
   }
