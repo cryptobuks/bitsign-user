@@ -29,7 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 const AuthButton = (token, funcion) => (
   (token.token) ? (
     <p>
-      Welcome! <button onClick={funcion} >Sign out</button>
+      Welcome! <button onClick={funcion.funcion} >Sign out</button>
     </p>
   ) : (
     <p>You are not logged in.</p>
