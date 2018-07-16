@@ -2,7 +2,9 @@ import {
   NEW_USER,
   USER_INFO,
   NOTARIZATION_TX,
-  GET_TRANSACTION
+  GET_TRANSACTION,
+  FAKE_AUTH,
+  LOG_OUT
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -42,6 +44,18 @@ export default (state = initialState, action) => {
       break
     
     case GET_TRANSACTION:
+      newState = {
+      }
+      break
+
+    case FAKE_AUTH:
+      newState = {
+        ...state,
+        token: action.info
+      }
+      break
+
+    case LOG_OUT:
       newState = {
       }
       break

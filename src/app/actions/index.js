@@ -4,7 +4,9 @@ import {
   NEW_USER,
   USER_INFO,
   NOTARIZATION_TX,
-  GET_TRANSACTION
+  GET_TRANSACTION,
+  FAKE_AUTH,
+  LOG_OUT
 } from './actionTypes'
 
 /*
@@ -34,6 +36,15 @@ const _getTransaction = (data) => ({
   info: data
 })
 
+const _fakeAuth = (data) => ({
+  type: FAKE_AUTH,
+  info: data
+})
+
+const _logOut = () => ({
+  type: LOG_OUT
+})
+
 /*
  * ACTION CREATORS
  * Acá defino las creaciones de acciones.
@@ -56,18 +67,24 @@ export const newUser = (props) => (dispatch) => {
   })
 }
 
-export const userInfo = (props) => (dispatch) => {
+export const userInfo = (props, from, history) => (dispatch) => {
   axios.get('https://api.bitsign.io/api/v2/user?email='+props.email+'&password='+props.password, {
     email: props.email,
     password: props.password
   })
   .then(res => {
-    alert('User info: ' + props.email + props.password);
     console.log(res);
-    console.log(res.data.data);
-    localStorage.setItem('ethereumAddress', JSON.stringify(res.data.data.ethereum.address));
-    localStorage.setItem('token', JSON.stringify(res.data.data.token));
-    dispatch(_userInfo(res.data.data))
+    if(res.data.success) {
+      alert('User info: ' + props.email + props.password);
+      console.log(res.data.data);
+      localStorage.setItem('ethereumAddress', JSON.stringify(res.data.data.ethereum.address));
+      localStorage.setItem('token', JSON.stringify(res.data.data.token));
+      dispatch(_userInfo(res.data.data))
+      console.log('path en userinfo: ', from)
+      history.push(from.pathname)
+    }else{
+      alert(res.data.error.message)
+    }
   })
 }
 
@@ -77,7 +94,7 @@ export const notarization = (props) => (dispatch) => {
       data: props.data,
       address: props.address,
       password: props.password
-     })
+      })
       .then(res => {
         alert('Data: ' + props.data);
         console.log(res);
@@ -97,4 +114,18 @@ export const getTransaction = (props) => (dispatch) => {
         console.log(res.data);
         dispatch(_getTransaction(res.data))
     })
+}
+
+export const fakeAuth = () => (dispatch) => {
+  let token
+  token = JSON.parse(localStorage.getItem('token'))
+  console.log("token en action: " + token)
+  dispatch(_fakeAuth(token))
+}
+
+export const logOut = (history) => (dispatch) => {
+  console.log("limpiar")
+  localStorage.clear()
+  history.push('/')
+  dispatch(_logOut)
 }

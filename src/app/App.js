@@ -1,6 +1,8 @@
 // Modules
 import React, { Component } from 'react'
-import { withRouter, Redirect, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Redirect, Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { fakeAuth, logOut } from './actions'
 
 // Components
 import Nav from './components/Nav'
@@ -13,97 +15,58 @@ import TransactionGet from './views/TransactionGet'
 
 import './App.css'
 
-let fakeAuth;
-
-try {
-  fakeAuth = {
-    address: JSON.parse(localStorage.getItem('ethereumAddress')),
-    token: JSON.parse(localStorage.getItem('token')),
-
-    signout() {
-      console.log(fakeAuth.address + " - " + fakeAuth.token);
-      localStorage.clear();
-    }
-  }
-} catch (error) {
-    fakeAuth = {
-    address: localStorage.setItem('ethereumAddress', ''),
-    token: localStorage.setItem('token', ''),
-    
-    signout(cb) {
-      console.log(fakeAuth.adress + " - " + fakeAuth.token);
-      localStorage.clear();
-    }
-  }
-  console.log(error)
-}
-
-class Login extends React.Component {
-  state = {
-    redirectToReferrer: false
-  }
-  login = () => {
-    this.setState({
-      redirectToReferrer: true
-    })
-  }
-
-  render() {
-    const { from } = this.props.location.state || { from: { pathname: '/info' } }
-    const { redirectToReferrer } = this.state
-
-    if (redirectToReferrer === true) {
-      return <Redirect to={from} />
-    }
-
-    return (
-      <div>
-        <p>You must log in to view the page at {from.pathname}</p>
-        <button onClick={this.login}>Log in</button>
-      </div>
-    )
-  }
-}
-
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
-    fakeAuth.token
+    (rest.token)
       ? <Component {...props} />
       : <Redirect to={{
-          pathname: '/login',
+          pathname: '/info',
           state: { from: props.location }
         }} />
   )} />
 )
 
-const AuthButton = withRouter(({ history }) => (
-  fakeAuth.token ? (
+const AuthButton = (token, funcion) => (
+  (token.token) ? (
     <p>
-      Welcome! <button onClick={() => {
-        fakeAuth.signout(() => history.push('/'))
-      }}>Sign out</button>
+      Welcome! <button onClick={funcion.asLogOut} >Sign out</button>
     </p>
   ) : (
     <p>You are not logged in.</p>
   )
-))
+)
 
 class App extends Component {
+  componentWillMount() {
+    console.log("willmount: " + this.props);
+    this.props.asFakeAuth()
+  }
+
   render() {
     return (
-      <div className="app">
-      <AuthButton/>
-        <Nav /> 
-        <Switch>
-          <Route exact path="/" component={User} />
-          <Route exact path="/info" component={Info} />
-          <Route exact path="/login" component={Login} />
-          <PrivateRoute exact path="/transaction" component={Transaction} />
-          <PrivateRoute exact path="/transactionGet" component={TransactionGet} />
-        </Switch>
-      </div>
+      <BrowserRouter>
+        <div className="app">
+        <AuthButton token={this.props.token} funcion={this.props.asLogOut}/>
+          <Nav /> 
+          <Switch>
+            <Route exact path="/" component={User} />
+            <Route exact path="/info" component={Info} />
+            <PrivateRoute token={this.props.token} exact path="/transaction" component={Transaction} />
+            <PrivateRoute token={this.props.token} exact path="/transactionGet" component={TransactionGet} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }
 
-export default App
+const mapStateToProps = (state) => ({
+  token: state.token
+})
+
+const mapDispatchToProps = dispatch => ({
+  asFakeAuth: () => dispatch(fakeAuth()),
+  asLogOut: () => dispatch(logOut())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

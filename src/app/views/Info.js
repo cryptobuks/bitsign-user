@@ -26,15 +26,18 @@ class Info extends Component {
     });
   }
 
-  handleSubmit(event) {
+  handleSubmit(event, from) {
     event.preventDefault();
-    this.props.asUserInfo(this.state);
+    console.log('event: ', from)
+    this.props.asUserInfo(this.state, from, this.props.history)
   }
 
   render() {
+    const { from } = this.props.location.state || { from: { pathname: '/info' } }
+
     return (
-      <form onSubmit={this.handleSubmit}>
-      <h1>User Info</h1>
+      <form onSubmit={(event) => this.handleSubmit(event, from)}>
+      <h1>User Info { from.pathname } </h1>
         <label>
           Email:
           <input name="email" type="email" value={this.state.value} onChange={this.handleChange} />
@@ -58,7 +61,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  asUserInfo: (props) => dispatch(userInfo(props))
+  asUserInfo: (props, from, history) => dispatch(userInfo(props, from, history))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Info);
