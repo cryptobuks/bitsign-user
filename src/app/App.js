@@ -29,7 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 const AuthButton = (token, funcion) => (
   (token.token) ? (
     <p>
-      Welcome! <button onClick={funcion.asLogOut} >Sign out</button>
+      Welcome! <button onClick={funcion} >Sign out</button>
     </p>
   ) : (
     <p>You are not logged in.</p>
@@ -37,6 +37,16 @@ const AuthButton = (token, funcion) => (
 )
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.signOut = this.signOut.bind(this);
+  }
+
+  signOut(){
+    this.props.asLogOut()
+  }
+
   componentWillMount() {
     console.log("willmount: " + this.props);
     this.props.asFakeAuth()
@@ -46,7 +56,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div className="app">
-        <AuthButton token={this.props.token} funcion={this.props.asLogOut}/>
+        <AuthButton token={this.props.token} funcion={this.signOut}/>
           <Nav /> 
           <Switch>
             <Route exact path="/" component={User} />

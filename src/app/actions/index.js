@@ -126,6 +126,6 @@ export const fakeAuth = () => (dispatch) => {
 export const logOut = (history) => (dispatch) => {
   console.log("limpiar")
   localStorage.clear()
-  history.push('/')
+  history.push('/info')
   dispatch(_logOut)
 }
