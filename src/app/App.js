@@ -26,10 +26,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   )} />
 )
 
-const AuthButton = (token, funcion) => (
-  (token.token) ? (
+const AuthButton = ({token, funcion}) => (
+  (token) ? (
     <p>
-      Welcome! <button onClick={funcion.funcion} >Sign out</button>
+      Welcome! <button onClick={() => funcion()} >Sign out</button>
     </p>
   ) : (
     <p>You are not logged in.</p>
@@ -37,26 +37,23 @@ const AuthButton = (token, funcion) => (
 )
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.signOut = this.signOut.bind(this);
-  }
-
-  signOut(){
-    this.props.asLogOut()
-  }
-
   componentWillMount() {
     console.log("willmount: " + this.props);
     this.props.asFakeAuth()
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (!this.props.token === '') {
+      console.log('update')
+    }
   }
 
   render() {
     return (
       <BrowserRouter>
         <div className="app">
-        <AuthButton token={this.props.token} funcion={this.signOut}/>
+        <AuthButton token={this.props.token} funcion={() => this.props.asLogOut()}/>
           <Nav /> 
           <Switch>
             <Route exact path="/" component={User} />
@@ -76,7 +73,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => ({
   asFakeAuth: () => dispatch(fakeAuth()),
-  asLogOut: () => dispatch(logOut())
+  asLogOut: (history) => dispatch(logOut(history))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

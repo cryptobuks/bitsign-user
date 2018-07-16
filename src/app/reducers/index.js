@@ -55,8 +55,9 @@ export default (state = initialState, action) => {
       }
       break
 
-    case LOG_OUT:
+    case LOG_OUT: 
       newState = {
+        token: action.info.token
       }
       break
 

@@ -41,8 +41,9 @@ const _fakeAuth = (data) => ({
   info: data
 })
 
-const _logOut = () => ({
-  type: LOG_OUT
+const _logOut = (data) => ({
+  type: LOG_OUT,
+  info: data
 })
 
 /*
@@ -123,9 +124,9 @@ export const fakeAuth = () => (dispatch) => {
   dispatch(_fakeAuth(token))
 }
 
-export const logOut = (history) => (dispatch) => {
-  console.log("limpiar")
+export const logOut = () => (dispatch) => {
+  let token = '';
+  console.log("limpiar" + token)
   localStorage.clear()
-  history.push('/info')
-  dispatch(_logOut)
+  dispatch(_logOut(token))
 }
