@@ -15,7 +15,7 @@ import TransactionGet from './views/TransactionGet'
 
 import './App.css'
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+/*const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     (rest.token)
       ? <Component {...props} />
@@ -24,7 +24,22 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
           state: { from: props.location }
         }} />
   )} />
-)
+)*/
+
+class PrivateRoute extends Component {
+  
+  render() {
+      if (this.props.token) {
+        return (
+          <Route exact path={this.props.path} component={this.props.component} />
+        )
+      } else {
+        return (
+          <Redirect to={{pathname: '/info', state: { from: this.props.location }}} />
+        )
+      }
+  }
+}
 
 const AuthButton = ({token, funcion}) => (
   (token) ? (
