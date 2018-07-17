@@ -4,7 +4,8 @@ import {
   NOTARIZATION_TX,
   GET_TRANSACTION,
   FAKE_AUTH,
-  LOG_OUT
+  LOG_OUT,
+  LOAD
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   data: '',
   address: '',
   hash: '',
-  success: ''
+  success: '',
+  loading: false
 }
 
 export default (state = initialState, action) => {
@@ -40,11 +42,15 @@ export default (state = initialState, action) => {
 
     case NOTARIZATION_TX:
       newState = {
+        ...state,
+        loading: false
       }
       break
     
     case GET_TRANSACTION:
       newState = {
+        ...state,
+        loading: true
       }
       break
 
@@ -57,7 +63,15 @@ export default (state = initialState, action) => {
 
     case LOG_OUT: 
       newState = {
+        ...state,
         token: action.info.token
+      }
+      break
+
+    case LOAD:
+      newState = {
+        ...state,
+        loading: true
       }
       break
 

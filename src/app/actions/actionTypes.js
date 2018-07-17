@@ -7,3 +7,5 @@ export const GET_TRANSACTION = 'GET_TRANSACTION'
 
 export const FAKE_AUTH = 'FAKE_AUTH'
 export const LOG_OUT = 'LOG_OUT'
+
+export const LOAD = 'LOAD'

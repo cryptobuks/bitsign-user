@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { getTransaction } from '../actions'
+import { fakeAuth, getTransaction } from '../actions'
+
+import Spinner from './Spinner'
 
 class Transaction extends Component {
+  componentWillMount() {
+    console.log("willmount get: " + this.props);
+    this.props.asFakeAuth()
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       hash: '',
       token: '',
-      address: ''
+      address: '',
+      loading: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -31,12 +39,17 @@ class Transaction extends Component {
   }
 
   render() {
-    return (
+    if (this.props.loading) {
+      return (
+        <Spinner />
+      )
+    } else {
+      return (
       <form onSubmit={this.handleSubmit}>
       <h1>Transaction:</h1>
         <label>
           Token:
-          <input name="token" type="text" value={this.state.value} onChange={this.handleChange} />
+          <input name="token" type="text" required="required" value={this.state.value} onChange={this.handleChange} />
         </label>
         <br />
         <label>
@@ -46,16 +59,19 @@ class Transaction extends Component {
                 
         <input type="submit" value="Submit" />
       </form>
-    );
+      );
+    }
   }
 }
 
 const mapStateToProps = (state) => ({
   token: state.token,
-  address: state.address
+  address: state.address,
+  loading: state.loading
 })
 
 const mapDispatchToProps = dispatch => ({
+  asFakeAuth: () => dispatch(fakeAuth()),
   asGetTransaction: (props) => dispatch(getTransaction(props))
 })
 

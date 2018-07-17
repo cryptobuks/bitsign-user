@@ -6,7 +6,8 @@ import {
   NOTARIZATION_TX,
   GET_TRANSACTION,
   FAKE_AUTH,
-  LOG_OUT
+  LOG_OUT,
+  LOAD
 } from './actionTypes'
 
 /*
@@ -44,6 +45,10 @@ const _fakeAuth = (data) => ({
 const _logOut = (data) => ({
   type: LOG_OUT,
   info: data
+})
+
+const _load = () => ({
+  type: LOAD
 })
 
 /*
@@ -90,6 +95,7 @@ export const userInfo = (props, from, history) => (dispatch) => {
 }
 
 export const notarization = (props) => (dispatch) => {
+  dispatch(_load())
   axios.post('https://api.bitsign.io/eth/notarizetx', {
       token: props.token,
       data: props.data,
@@ -105,6 +111,7 @@ export const notarization = (props) => (dispatch) => {
 }
 
 export const getTransaction = (props) => (dispatch) => {
+  dispatch(_load())
   axios.get('https://api.bitsign.io/api/v2/transactions?token='+props.token+'&hash='+props.hash, {
       token: props.token,
       hash: props.hash
